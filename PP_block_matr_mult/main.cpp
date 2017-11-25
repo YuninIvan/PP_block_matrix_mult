@@ -172,84 +172,11 @@ int main(int argc, char **argv)
 			omp_unset_lock(&writelock);
 		}
 	}
-	//view(res, n, n);
-	/*
-#pragma omp sections
-	{
-		{
-#pragma omp section
-			{
-				while (!qu_block[0].empty())
-				{
-					mult_block(arr_one, arr_two, block_0, qu_block[0].front(), block_size, n);
-					omp_set_lock(&writelock);
-					sum_block_matr(block_0, res, qu_block[0].front(), block_size, n);
-					omp_unset_lock(&writelock);
-					qu_block[0].pop();
-				}
-			}
-#pragma omp section
-			{
-				while (!qu_block[1].empty())
-				{
-					mult_block(arr_one, arr_two, block_1, qu_block[1].front(), block_size, n);
-					omp_set_lock(&writelock);
-					sum_block_matr(block_1, res, qu_block[1].front(), block_size, n);
-					omp_unset_lock(&writelock);
-					qu_block[1].pop();
-				}
-			}
 
-#pragma omp section
-			{
-				while (!qu_block[2].empty())
-				{
-					mult_block(arr_one, arr_two, block_2, qu_block[2].front(), block_size, n);
-					omp_set_lock(&writelock);
-					sum_block_matr(block_2, res, qu_block[2].front(), block_size, n);
-					omp_unset_lock(&writelock);
-					qu_block[2].pop();
-				}
-			}
-#pragma omp section
-			{
-				while (!qu_block[3].empty())
-				{
-					mult_block(arr_one, arr_two, block_3, qu_block[3].front(), block_size, n);
-					omp_set_lock(&writelock);
-					sum_block_matr(block_3, res, qu_block[3].front(), block_size, n);
-					omp_unset_lock(&writelock);
-				qu_block[3].pop();
-				}
-			}
-		}
-	}*/
 cout << "Block queue parallel  Time:   " << omp_get_wtime() - work_time << " Sec." << endl;
 	if (cmp(res, key, n))
 		cout << "False" << endl;
 	//====================
-	for (int i = 0; i < n*n; i++)
-		res[i] = 0;
-	work_time = omp_get_wtime();
-#pragma omp parallel shared(qu_block)
-	{
-#pragma omp task if(!qu_block_copy.empty())
-	{
-		cout << "i there";
-		id = omp_get_thread_num();
-		while (!qu_block_copy.empty())
-		{
-			tmp_block = qu_block_copy.front();
-			qu_block.pop();
-			mult_block(arr_one, arr_two, block_for_thread[id], tmp_block, block_size, n);
-#pragma omp taskwait
-			sum_block_matr(block_for_thread[id], res, tmp_block, block_size, n);
-		}
-	}
-	}
-		cout << "Block queue 123  Time:   " << omp_get_wtime() - work_time << " Sec." << endl;
-		if (cmp(res, key, n))
-			cout << "False" << endl;
 //========================
 	for (int i = 0; i < n*n; i++)
 		res[i] = 0;
